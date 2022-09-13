@@ -11,8 +11,14 @@
     "format": "prettier 'src/**/*.{ts,tsx}' --write"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.3.2",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@reduxjs/toolkit": "^1.8.5",
+    "framer-motion": "^7.3.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "6"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",
