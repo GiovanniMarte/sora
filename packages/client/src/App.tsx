@@ -1,12 +1,17 @@
 import { useState } from 'react';
 
+type Theme = 'light' | 'dark';
+
 const App = () => {
-  const [count, setCount] = useState(0);
+  const [theme, setTheme] = useState<Theme>('light');
+
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
   return (
-    <div className="App">
-      <p>Hello world</p>
-      <button onClick={() => setCount(count => count + 1)}>count is {count}</button>
+    <div className="h-full" data-theme={theme === 'light' ? 'light' : 'dark'}>
+      <button className="btn m-3" onClick={toggleTheme}>
+        {theme}
+      </button>
     </div>
   );
 };
