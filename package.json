@@ -1,0 +1,15 @@
+{
+  "name": "sora",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:client": "yarn workspace @sora/client dev",
+    "dev:server": "yarn workspace @sora/server start:dev",
+    "build": "yarn workspaces run build",
+    "lint": "yarn workspaces run lint",
+    "format": "yarn workspaces run format"
+  }
+}
