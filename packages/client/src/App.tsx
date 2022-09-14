@@ -1,13 +1,9 @@
-import { useTheme } from './hooks/useTheme';
+import Header from './components/Header';
 
 const App = () => {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="h-full" data-theme={theme === 'light' ? 'light' : 'dark'}>
-      <button className="btn m-3" onClick={toggleTheme}>
-        {theme}
-      </button>
+    <div className="h-full">
+      <Header />
     </div>
   );
 };

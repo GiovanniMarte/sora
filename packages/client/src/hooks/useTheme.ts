@@ -1,21 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 type Theme = 'light' | 'dark';
 
-export const useTheme = (base: Theme = 'light') => {
+export const useTheme = (base: Theme) => {
   const [storedValue, setValue] = useLocalStorage<Theme>('theme', base);
-  const [theme, setTheme] = useState<Theme>(storedValue);
+  const [themeValue, setThemeValue] = useState<Theme>(storedValue);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', themeValue);
+  }, [themeValue]);
 
   const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
+    const nextTheme = themeValue === 'light' ? 'dark' : 'light';
+    setThemeValue(nextTheme);
     setValue(nextTheme);
   };
 
   return {
-    theme,
-    setTheme,
+    themeValue,
+    setThemeValue,
     toggleTheme,
   };
 };
