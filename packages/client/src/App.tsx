@@ -1,11 +1,7 @@
-import { useState } from 'react';
-
-type Theme = 'light' | 'dark';
+import { useTheme } from './hooks/useTheme';
 
 const App = () => {
-  const [theme, setTheme] = useState<Theme>('light');
-
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="h-full" data-theme={theme === 'light' ? 'light' : 'dark'}>
