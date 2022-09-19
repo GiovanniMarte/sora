@@ -1,8 +1,16 @@
+import { FormEvent } from 'react';
 import FormControl from './FormControl';
 
 const LoginForm = () => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
+
   return (
-    <form className="card flex-shrink-0 w-full max-w-sm shadow-2xl backdrop-blur-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="card flex-shrink-0 w-full max-w-sm shadow-2xl backdrop-blur-lg"
+    >
       <div className="card-body">
         <FormControl label="Email" inputType="text" placeholder="email" />
         <FormControl label="Password" inputType="password" placeholder="password" />

@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'homepage-dark': "url('/public/bg-dark1.jpg')",
-        'homepage-light': "url('/public/bg-light1.jpg')",
+        'homepage-dark': "url('/bg-dark1.jpg')",
+        'homepage-light': "url('/bg-light1.jpg')",
       },
     },
   },
