@@ -7,7 +7,3 @@ body,
 #root {
   @apply h-full;
 }
-
-.btn {
-  @apply rounded-xl;
-}
