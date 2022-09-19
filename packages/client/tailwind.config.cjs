@@ -5,4 +5,12 @@ module.exports = {
   daisyui: {
     themes: ['light', 'dark'],
   },
+  theme: {
+    extend: {
+      backgroundImage: {
+        'homepage-dark': "url('/public/bg-dark1.jpg')",
+        'homepage-light': "url('/public/bg-light1.jpg')",
+      },
+    },
+  },
 };
