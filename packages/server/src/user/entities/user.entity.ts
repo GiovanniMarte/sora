@@ -19,7 +19,4 @@ export class User {
 
   @Column({ length: 250, nullable: true })
   bio: string;
-
-  @Column({ default: true })
-  public: boolean;
 }
