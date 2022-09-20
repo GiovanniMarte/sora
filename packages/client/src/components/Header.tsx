@@ -4,7 +4,7 @@ import { IconContext } from 'react-icons';
 
 const Header = () => {
   return (
-    <header className="fixed w-full backdrop-blur-lg shadow-lg">
+    <header className="fixed z-50 w-full shadow-lg backdrop-blur-lg">
       <IconContext.Provider value={{ size: '20' }}>
         <div className="navbar justify-between gap-1">
           <a className="btn btn-ghost normal-case text-xl">
