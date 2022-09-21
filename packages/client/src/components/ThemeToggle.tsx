@@ -5,7 +5,7 @@ const ThemeToggle = () => {
   const { themeValue, toggleTheme } = useTheme('light');
 
   return (
-    <button type='button' onClick={toggleTheme} className="btn btn-ghost" aria-label="Theme toggle">
+    <button type="button" onClick={toggleTheme} className="btn btn-ghost" aria-label="Theme toggle">
       {themeValue === 'light' ? <TbSun /> : <TbMoon />}
     </button>
   );
