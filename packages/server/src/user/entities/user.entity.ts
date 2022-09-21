@@ -14,9 +14,9 @@ export class User {
   @Column({ length: 100 })
   password: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ length: 100, default: '' })
   avatar: string;
 
-  @Column({ length: 250, nullable: true })
+  @Column({ length: 250, default: '' })
   bio: string;
 }
