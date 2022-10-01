@@ -5,14 +5,12 @@ import {
   Delete,
   Param,
   Post,
-  Req,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from '../user/dtos/create-user.dto';
+import { LoginUserDto } from '../user/dtos/login-user.dto';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
@@ -22,10 +20,9 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() req) {
-    return req.user;
+  login(@Body() loginUserDto: LoginUserDto) {
+    return this.authService.login(loginUserDto);
   }
 
   @Post('register')
