@@ -1,5 +1,3 @@
-import { User } from '../user/entities/user.entity';
-
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -23,6 +21,6 @@ export interface JwtPayload {
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user: User;
+    user: JwtPayload;
   }
 }
