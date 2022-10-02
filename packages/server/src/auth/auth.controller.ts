@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('remove/:email')
+  @Delete('remove')
   remove(@Req() request: FastifyRequest) {
     return this.userService.removeUser(request.user.email);
   }
