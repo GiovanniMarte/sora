@@ -10,6 +10,7 @@ declare global {
       REDIS_PORT: string;
       JWT_SECRET: string;
       JWT_EXP: string;
+      NODE_ENV: string;
     }
   }
 }
