@@ -23,11 +23,11 @@ describe('UserService', () => {
         ConfigModule.forRoot({
           isGlobal: true,
           load: [databaseConfig],
-          envFilePath: `.env.test`,
+          envFilePath: '.env.test',
         }),
         TypeOrmModule.forRootAsync({
           inject: [ConfigService],
-          useFactory: async (configService: ConfigService) => ({
+          useFactory: (configService: ConfigService) => ({
             ...configService.get('database'),
           }),
         }),
