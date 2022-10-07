@@ -1,55 +1,55 @@
+import { faker } from '@faker-js/faker';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { createFakeUser } from '../common/fakerUtils';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import databaseConfig from '../config/database.config';
+import { CreateUserDto } from './dtos/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 describe('UserService', () => {
   let module: TestingModule;
   let userService: UserService;
   let userRepository: Repository<User>;
+  let user: User;
+  let userDto: CreateUserDto;
 
-  const fakeUser = createFakeUser();
-  const { password: fakeUserPassword, ...restFakeUser } = fakeUser;
+  beforeAll(() => {
+    user = {
+      id: faker.datatype.number(100),
+      username: faker.internet.userName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      avatar: faker.internet.avatar(),
+      bio: faker.lorem.words(10),
+    };
 
-  const setupModule = async () => {
+    const { id, ...restUser } = user;
+    userDto = restUser;
+  });
+
+  beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          load: [databaseConfig],
-          envFilePath: '.env.test',
-        }),
-        TypeOrmModule.forRootAsync({
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService) => ({
-            ...configService.get('database'),
-          }),
-        }),
-        TypeOrmModule.forFeature([User]),
+      providers: [
+        UserService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            findOneBy: jest.fn().mockResolvedValue(user),
+            create: jest.fn().mockReturnValue(user),
+            save: jest.fn().mockResolvedValue(user),
+            remove: jest.fn().mockResolvedValue(user),
+          },
+        },
       ],
-      providers: [UserService],
     }).compile();
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-  };
-
-  beforeEach(setupModule);
-
-  afterEach(async () => {
-    await module.close();
   });
 
-  afterAll(async () => {
-    console.log('clearing database...');
-    await setupModule();
-    await userRepository.clear();
+  afterEach(async () => {
     await module.close();
   });
 
@@ -58,41 +58,59 @@ describe('UserService', () => {
     expect(userRepository).toBeDefined();
   });
 
-  describe('createUser', () => {
-    it('should create a new user and return it', async () => {
-      const { id, password, ...restUser } = await userService.createUser(fakeUser);
-
-      const valid = await bcrypt.compare(fakeUser.password, password);
-
-      expect(restUser).toEqual(restFakeUser);
-      expect(id).toBeGreaterThanOrEqual(0);
-      expect(valid).toBe(true);
-    });
-
-    it('should fail to create a user and throw a ConflictException', async () => {
-      await expect(userService.createUser(fakeUser)).rejects.toThrow(ConflictException);
-    });
-  });
-
   describe('findByEmail', () => {
     it('should find a user and return it', async () => {
-      const { id, password, ...restUser } = await userService.findByEmail(fakeUser.email);
+      const findOneSpy = jest.spyOn(userRepository, 'findOneBy');
+      const foundUser = userService.findByEmail(user.email);
 
-      expect(restUser).toEqual(restFakeUser);
+      await expect(foundUser).resolves.toEqual(user);
+      expect(findOneSpy).toBeCalledWith({ email: user.email });
     });
 
     it('should fail to find a user and throw a NotFoundException', async () => {
-      await expect(userService.findByEmail('invalid')).rejects.toThrow(NotFoundException);
+      const findOneSpy = jest.spyOn(userRepository, 'findOneBy').mockResolvedValue(null);
+      const foundUser = userService.findByEmail(user.email);
+
+      await expect(foundUser).rejects.toThrow(NotFoundException);
+      expect(findOneSpy).toBeCalledWith({ email: user.email });
+    });
+  });
+
+  describe('createUser', () => {
+    it('should create a new user and return it', async () => {
+      const findOneSpy = jest.spyOn(userRepository, 'findOneBy').mockResolvedValue(null);
+      const bcryptSpy = jest.spyOn(bcrypt, 'hash');
+      const createSpy = jest.spyOn(userRepository, 'create');
+      const saveSpy = jest.spyOn(userRepository, 'save');
+
+      const createdUser = userService.createUser(userDto);
+
+      await expect(createdUser).resolves.toEqual(user);
+      expect(findOneSpy).toHaveBeenCalledWith({ email: userDto.email });
+      expect(bcryptSpy).toHaveBeenCalledWith(user.password, 10);
+      expect(createSpy).toHaveBeenCalledWith({ ...userDto, password: expect.any(String) });
+      expect(saveSpy).toHaveBeenCalledWith(user);
+    });
+
+    it('should fail to create a user and throw a ConflictException', async () => {
+      const findOneSpy = jest.spyOn(userRepository, 'findOneBy');
+      const foundUser = userService.createUser(userDto);
+
+      await expect(foundUser).rejects.toThrow(ConflictException);
+      expect(findOneSpy).toBeCalledWith({ email: user.email });
     });
   });
 
   describe('removeUser', () => {
     it('should remove a user without throwing any exception', async () => {
-      await expect(userService.removeUser(fakeUser.email)).resolves.not.toThrowError();
-    });
+      const findOneSpy = jest.spyOn(userRepository, 'findOneBy');
+      const removeSpy = jest.spyOn(userRepository, 'remove');
 
-    it('should fail to remove a user and throw a NotFoundException', async () => {
-      await expect(userService.removeUser('invalid')).rejects.toThrow(NotFoundException);
+      const result = userService.removeUser(user.email);
+
+      await expect(result).resolves.toEqual(user);
+      expect(findOneSpy).toHaveBeenCalledWith({ email: userDto.email });
+      expect(removeSpy).toHaveBeenCalledWith(user);
     });
   });
 });
