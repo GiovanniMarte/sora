@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
@@ -19,7 +19,7 @@ export class UserService {
     return user;
   }
 
-  async createUser(userDto: CreateUserDto) {
+  async createUser(userDto: CreateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ email: userDto.email });
 
     if (user) {
@@ -33,7 +33,7 @@ export class UserService {
     return this.userRepository.save(newUser);
   }
 
-  async removeUser(email: string) {
+  async removeUser(email: string): Promise<User> {
     const user = await this.findByEmail(email);
     return await this.userRepository.remove(user);
   }
