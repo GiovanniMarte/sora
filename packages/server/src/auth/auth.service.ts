@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 export class AuthService {
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
-  private async validateUser(loginUserDto: LoginUserDto) {
+  async validateUser(loginUserDto: LoginUserDto) {
     const user = await this.userService.findByEmail(loginUserDto.email);
 
     const valid = await bcrypt.compare(loginUserDto.password, user.password);

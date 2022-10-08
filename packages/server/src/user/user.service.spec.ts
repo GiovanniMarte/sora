@@ -68,6 +68,7 @@ describe('UserService', () => {
 
     it('should fail to find a user and throw a NotFoundException', async () => {
       const findOneSpy = jest.spyOn(repository, 'findOneBy').mockResolvedValue(null);
+      
       const foundUser = service.findByEmail(user.email);
 
       await expect(foundUser).rejects.toThrow(NotFoundException);
