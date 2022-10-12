@@ -15,13 +15,17 @@ declare global {
   }
 }
 
+declare module 'fastify' {
+  interface FastifyRequest {
+    user: JwtPayload;
+  }
+}
+
 export interface JwtPayload {
   email: string;
   sub: number;
 }
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    user: JwtPayload;
-  }
+export interface JwtResponse {
+  accessToken: string;
 }
