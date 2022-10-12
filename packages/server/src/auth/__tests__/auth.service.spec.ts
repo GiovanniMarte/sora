@@ -1,12 +1,12 @@
-import { faker } from '@faker-js/faker';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
-import { AuthService } from './auth.service';
+import { User } from '../../user/entities/user.entity';
+import { UserService } from '../../user/user.service';
+import { AuthService } from '../auth.service';
 import * as bcrypt from 'bcrypt';
-import { LoginUserDto } from '../user/dtos/login-user.dto';
+import { LoginUserDto } from '../../user/dtos/login-user.dto';
 import { UnauthorizedException } from '@nestjs/common';
+import { createUserStub } from '../../user/__tests__/stubs/user.stub';
 
 describe('AuthService', () => {
   let module: TestingModule;
@@ -16,16 +16,9 @@ describe('AuthService', () => {
   let loginUser: LoginUserDto;
 
   beforeAll(() => {
-    user = {
-      id: faker.datatype.number(100),
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      avatar: faker.internet.avatar(),
-      bio: faker.lorem.words(10),
-    };
-
+    user = createUserStub();
     const { email, password } = user;
+
     loginUser = { email, password };
   });
 
